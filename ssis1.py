@@ -1,4 +1,3 @@
-import tkinter as tk
 
 courses = []
 students = []
@@ -85,18 +84,6 @@ class Student:
 
 c= Course()
 s = Student()
-
-def display():
-
-    window = tk.Tk()
-    window.geometry("800x430")
-    window.title("SIMPLE STUDENT INFORMATION SYSTEMS")
-    label = tk.Label(
-            text = "SIMPLE STUDENT INFORMATION SYSTEMS",
-            foreground= "white",
-            background= "black"
-    )
-    label.pack()
 
     c.select_menu()
     answer = input( "\n what do you want to do?: ")
