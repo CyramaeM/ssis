@@ -2,52 +2,107 @@ import csv
 
 courses = []
 students = []
-fields = [' student id',' name',' course',' gender',' year level']
+fields = [' student id',' name',' department',' gender',' year level']
+course_fields =['course id','course title','credits']
 database = 'studentlist.csv'
-""""
+course_data = 'courselist.csv'
+
+
 class Course:
 
     def add_course(self):
-            add = input("\n enter course: ")
-            #courses.append(add)
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print('add course')
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        global course_fields
+        global course_data
+        for field in course_fields:
+            add = input("enter "+ field + '')
+            courses.append(add)
+            
+        with open(course_data,'a',encoding= 'utf-8', newline= '') as a:
+            writer = csv.writer(a)
+            writer.writerows([courses])
     
     def list_course(self):
-        if len(courses) == 0:
-            print("list is empty! ")
-        else:
-            print(courses)
-        
+        global course_fields
+        global course_data
+
+        with open (course_data,'r', encoding= "utf-8") as lst:
+            reader = csv.reader(lst)
+            for row in reader:
+                    if len(row) > 0:
+                        print("course ID: ",row[0])
+                        print("course title: ",row[1])
+                        print("credits: ",row[2])
+                        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")        
+        input("press any key to continue")
+    
     def delete_course(self):
-        if len(courses) == 0:
-            print("course doesn't exist in our system! ")
+        global course_data
+        global course_fields
+
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print('delete course')
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        course_id = input("enter course id to delete: ")
+        course_found = False
+        update_course = []
+        with open(course_data,'r', encoding='utf-8')as dlt:
+            reader = csv.reader(dlt)
+            counter = 0
+            for row in reader:
+                if len(row) > 0:
+                    if course_id != row[0]:
+                        update_course.append(row)
+                        counter +=1
+                    else:
+                        course_found = True
+
+        if course_found is True:
+                with open ( course_data, "w",encoding= "utf-8") as ups:
+                    writer = csv.writer(ups)
+                    writer.writerows(update_course)
+                print("course Id: ", course_id,"deleted successfully")
         else:
-            remove = input("which course you want to delete?: ")
-            if remove in courses:
-                courses.remove(remove)
-                print(courses)
-            
+            print("course ID not found in our database")
+        
+        input("press any key to continue")
+
     def edit_course(self):
-        if len(courses) == 0:
-            print("no courses to edit ")
+        global course_fields
+        global course_data
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("update course")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        course_id = input('enter course ID no.')
+        index_course = None 
+        update_course = []
+        with open(course_data,'r',encoding="utf-8",newline='') as ups:
+            reader =csv.reader(ups)
+            counter = 0
+            for row in reader:
+                if len(row) > 0:
+                    if course_id == row[0]:
+                        index_course = counter
+                        print("student found: at index ", index_course)
+                        course_data = []
+                        for field in course_fields:
+                            revision = input("enter" + field + ": ")
+                            course_data.append(revision)
+                        update_course.append(course_data)
+                    else:
+                        update_course.append(row)
+                    counter += 1
+
+        if index_course is not None:
+            with open (course_data,"w",encoding= 'utf-8',newline='') as ups:
+                writer = csv.writer(ups)
+                writer.writerows(update_course)
+                print('course information updated')
         else:
-            edited = input("what course do you want to edit?: ")
-            print(courses)
-            if edited in courses:
-                newEdit = input("\n ")
-                courses.remove(edited)
-                courses.append(newEdit)
-                print(courses)
-"""
-def select_menu():
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print(" 1 : add  student")
-        print(" 2 : delete student")
-        print(" 3 : edit student ")
-        print(" 4 : view list student")
-        print(" 5 : quit")
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-
-
+            print('course ID no. not found in database')
+            
 class Student:
 
     def add_student(self):
@@ -57,10 +112,10 @@ class Student:
         global fields
         global database
         for field in fields:
-            new = input("\n add student: "+ field + ':')
+            new = input("\n enter: "+ field + ':')
             students.append(new)
 
-        with open(database,'a', encoding= "utf-8") as sdt:
+        with open(database,'a', encoding= "utf-8", newline='') as sdt:
             writer = csv.writer(sdt)
             writer.writerows([students])
 
@@ -77,7 +132,7 @@ class Student:
         student_id = input('enter student id no. to delete: ')
         student_found = False
         temp_data = []
-        with open (database,'r', encoding='utf - 8') as dlt:
+        with open (database,'r', encoding='utf-8') as dlt:
             reader = csv.reader(dlt)
             counter = 0
             for row in reader:
@@ -101,37 +156,62 @@ class Student:
     def edit_student(self):
         global fields
         global database
+
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("update student")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         student_id = input('enter student ID no.')
-        index = None
+        index_student = None 
         update_student = []
-        with open(database,'r',encoding="utf-8") as ups:
+        with open(database,'r',encoding="utf-8",newline='') as ups:
             reader =csv.reader(ups)
             counter = 0
             for row in reader:
                 if len(row) > 0:
                     if student_id == row[0]:
+                        index_student = counter
+                        print("student found: at index ", index_student)
                         students_data = []
                         for field in fields:
                             revision = input("enter" + field + ": ")
                             students_data.append(revision)
                         update_student.append(students_data)
-
                     else:
                         update_student.append(row)
                     counter += 1
-            else:
-                index is not None
-        if index is not None:
-            with open (database,'w',encoding= 'utf-8') as ups:
+
+        if index_student is not None:
+            with open (database,"w",encoding= 'utf-8',newline='') as ups:
                 writer = csv.writer(ups)
-                writer.writerow(update_student)
+                writer.writerows(update_student)
+                print('student information updated')
         else:
             print('Student ID no. not found in database')
             
         input("press any key to continue")
+
+
+    def search_students(self):
+        global fields
+        global database
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("search student records")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        idnumber =input("enter student Id no: ")
+        with  open (database,"r",encoding="utf-8", newline='')as find:
+            reader = csv.reader(find)
+            for row in reader:
+                if len(row) > 0:
+                    if idnumber == row[0]:
+                        print("~~~~~~~ student found ~~~~~~~~")
+                        print("Student Id: ", row[0])
+                        print("name: ", row[1])
+                        print("department: ",row[2])
+                        print("sex: ",row[3])
+                        print("year level: ",row[4])
+                        break
+        input("press any key to continue")
+
 
     def list_student(self):
         global fields
@@ -145,53 +225,104 @@ class Student:
                 if len(row)>0:
                     print("student id: ",row[0])
                     print("name: ",row[1])
-                    print("course: ",row[2])
-                    print("gender: ",row[3])
+                    print("department: ",row[2])
+                    print("sex: ",row[3])
                     print("year level: ",row[4])
                     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
+        input("press any key to continue")
+
     
-#c= Course()
+def select_menu():
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print(" 1 : add  student/course")
+    print(" 2 : delete student/course")
+    print(" 3 : edit student/course")
+    print(" 4 : view list student/course")
+    print(" 5 : search student")
+    print(" 6 : quit")
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+def add_menu():
+    print("what do you want to do?:")
+    print("a: add student")
+    print("b: add course")
+    answer = input()
+    if answer == 'a':
+        s.add_student()
+    elif answer == 'b':
+        c.add_course()
+    else:
+        print('error: command not found')
+
+def delete_menu():
+    print("what do you want to do?:")
+    print("a: delete student")
+    print("b: delete course")
+    answer = input()
+    if answer == 'a':
+        s.delete_student()
+    elif answer == 'b':
+        c.delete_course()
+    else:
+        print('error: command not found')
+
+
+def edit_menu():
+    print("what do you want to do?:")
+    print("a: edit student")
+    print("b: edit course")
+    answer = input()
+    if answer == 'a':
+        s.edit_student()
+    elif answer == 'b':
+        c.edit_course()
+    else:
+        print('error: command not found')
+    
+def view_menu():
+    print("what do you want to do?:")
+    print("a: view student")
+    print("b: view course")
+    answer = input()
+    if answer == 'a':
+        s.list_student()
+
+    elif answer == 'b':
+        c.list_course()
+    else:
+        print('error: command not found')
+
+    
+
+
+
+c= Course()
 s = Student()
 
-def display():
-    select_menu()
-    answer = input( "\n what do you want to do?: ")
-    while answer != '5':
-        if answer == "add course":
-           #c.add_course()
-           select_menu()
-           answer = input( "\n what do you want to do?: ")
-        elif answer == "delete course":
-            #c.delete_course()
-            select_menu()
-            answer = input("\n what to do you want to do?: ")
-        elif answer == "edit course":
-           # c.edit_course()
-            select_menu()
-            answer = input("\n what to do you want to do?: ")
-
-        elif answer == "view list course":
-           # c.list_course()
-            select_menu()
-            answer = input("\n what to do you want to do?: ")
-        elif answer == "1":
-            s.add_student()
-            select_menu()
-            answer = input("\n what to do you want to do?: ")
-        elif answer == "2":
-            s.delete_student()
-            select_menu()
-            answer = input("\n what to do you want to do?: ")
-        elif answer == "3":
-            s.edit_student()
-            select_menu()
-            answer = input("\n what to do you want to do?: ")
-        elif answer == "4":
-            s.list_student()
-            select_menu()
-            answer = input("\n what to do you want to do?: ")
-        
-
-display()
+select_menu()
+answer = input("\n what do you want to do?: ")
+while answer != '6':
+    if answer == "1":
+        add_menu()
+        select_menu()
+        answer = input("\n what to do you want to do?: ")
+    elif answer == "2":
+        delete_menu()
+        select_menu()
+        answer = input("\n what to do you want to do?: ")
+    elif answer == "3":
+        edit_menu()
+        select_menu()
+        answer = input("\n what to do you want to do?: ")
+    elif answer == "4":
+        view_menu()
+        select_menu()
+        answer = input("\n what to do you want to do?: ")
+    elif answer == '5':
+        s.search_students()
+        select_menu()
+        answer = input("\n what to do you want to do?: ")
+        break
+print(" Thank you for using our system")        
 
