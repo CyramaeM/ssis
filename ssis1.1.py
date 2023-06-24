@@ -2,8 +2,8 @@ import csv
 
 courses = []
 students = []
-fields = [' student id',' name',' department',' gender',' year level']
-course_fields =['course id','course title','credits']
+fields = [' student id',' name',' course',' gender',' year level']
+course_fields =['course id','course name']
 database = 'studentlist.csv'
 course_data = 'courselist.csv'
 
@@ -34,7 +34,6 @@ class Course:
                     if len(row) > 0:
                         print("course ID: ",row[0])
                         print("course title: ",row[1])
-                        print("credits: ",row[2])
                         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")        
         input("press any key to continue")
     
@@ -206,7 +205,7 @@ class Student:
                         print("~~~~~~~ student found ~~~~~~~~")
                         print("Student Id: ", row[0])
                         print("name: ", row[1])
-                        print("department: ",row[2])
+                        print("course: ",row[2])
                         print("sex: ",row[3])
                         print("year level: ",row[4])
                         break
@@ -225,7 +224,7 @@ class Student:
                 if len(row)>0:
                     print("student id: ",row[0])
                     print("name: ",row[1])
-                    print("department: ",row[2])
+                    print("course: ",row[2])
                     print("sex: ",row[3])
                     print("year level: ",row[4])
                     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -247,11 +246,14 @@ def add_menu():
     print("what do you want to do?:")
     print("a: add student")
     print("b: add course")
+    print("c: back")
     answer = input()
     if answer == 'a':
         s.add_student()
     elif answer == 'b':
         c.add_course()
+    elif answer == 'c':
+        select_menu()
     else:
         print('error: command not found')
 
@@ -259,11 +261,14 @@ def delete_menu():
     print("what do you want to do?:")
     print("a: delete student")
     print("b: delete course")
+    print("c: back")
     answer = input()
     if answer == 'a':
         s.delete_student()
     elif answer == 'b':
         c.delete_course()
+    elif answer == 'c':
+        select_menu()
     else:
         print('error: command not found')
 
@@ -272,11 +277,14 @@ def edit_menu():
     print("what do you want to do?:")
     print("a: edit student")
     print("b: edit course")
+    print("c: back")
     answer = input()
     if answer == 'a':
         s.edit_student()
     elif answer == 'b':
         c.edit_course()
+    elif answer == 'c':
+        select_menu()
     else:
         print('error: command not found')
     
@@ -284,12 +292,14 @@ def view_menu():
     print("what do you want to do?:")
     print("a: view student")
     print("b: view course")
+    print("c: back")
     answer = input()
     if answer == 'a':
         s.list_student()
-
     elif answer == 'b':
         c.list_course()
+    elif answer == 'c':
+        select_menu()
     else:
         print('error: command not found')
 
@@ -303,7 +313,7 @@ s = Student()
 select_menu()
 answer = input("\n what do you want to do?: ")
 while answer != '6':
-    if answer == "1":
+    elif answer == "1":
         add_menu()
         select_menu()
         answer = input("\n what to do you want to do?: ")
@@ -323,6 +333,9 @@ while answer != '6':
         s.search_students()
         select_menu()
         answer = input("\n what to do you want to do?: ")
-        break
+    else:
+        print("command invalid)
+        select_menu()
+        answer = input("\n what to do you want to do?: ")
 print(" Thank you for using our system")        
 
