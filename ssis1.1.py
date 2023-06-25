@@ -11,22 +11,29 @@ course_data = 'course_list.csv'
 class Course:
 
     def add_course(self):
+        global course_fields
+        global course_data
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print('add course')
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        global course_fields
-        global course_data
+
         for field in course_fields:
-            add = input("enter "+ field + '')
+            add = input("enter "+ field + ': ')
             courses.append(add)
             
         with open(course_data,'a',encoding= 'utf-8', newline= '') as a:
             writer = csv.writer(a)
             writer.writerows([courses])
+        
+        print("course added successfully")
+        input("press any key to return to main")
     
     def list_course(self):
         global course_fields
         global course_data
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print('course list')
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
         with open (course_data,'r', encoding= "utf-8") as lst:
             reader = csv.reader(lst)
@@ -40,13 +47,15 @@ class Course:
     def delete_course(self):
         global course_data
         global course_fields
-
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print('delete course')
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
         course_id = input("enter course id to delete: ")
         course_found = False
         update_course = []
+        student_found =False
+        update_student =[]
         with open(course_data,'r', encoding='utf-8')as dlt:
             reader = csv.reader(dlt)
             counter = 0
@@ -54,19 +63,37 @@ class Course:
                 if len(row) > 0:
                     if course_id != row[0]:
                         update_course.append(row)
-                        counter +=1
+                        
                     else:
+                        counter +=1
                         course_found = True
 
         if course_found is True:
                 with open ( course_data, "w",encoding= "utf-8") as ups:
                     writer = csv.writer(ups)
                     writer.writerows(update_course)
+
+                with open(database,'r',newline='') as file:
+                    reader = csv.reader(file)
+                    data = list(reader)
+                    count = 0
+                
+                with open(database,'w',newline='') as sdlt:
+                        writer = csv.writer(sdlt)
+                        writer.writerows(update_student)
+                        for rows in update_student:
+                            if rows[2] == course_data[1]:
+                                rows[2] = ''
+
+                            writer.writerow(rows)
+
                 print("course Id: ", course_id,"deleted successfully")
         else:
             print("course ID not found in our database")
+
         
-        input("press any key to continue")
+        
+        input("press any key to return to menu ")
 
     def edit_course(self):
         global course_fields
@@ -74,6 +101,7 @@ class Course:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("update course")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
         course_id = input('enter course ID no.')
         index_course = None 
         update_course = []
@@ -119,8 +147,8 @@ class Student:
             writer.writerows([students])
 
         print('data saves successfully')
-        input("press any key to continue")
-        return
+        input("press any key to return to menu")
+
 
     def delete_student(self):
         global fields
@@ -149,7 +177,7 @@ class Student:
         else:
             print('student ID no. not found in our database')
 
-        input('press any key to continue')
+        input('press any key to return to menu')
 
 
     def edit_student(self):
@@ -187,7 +215,7 @@ class Student:
         else:
             print('Student ID no. not found in database')
             
-        input("press any key to continue")
+        input("press any key to return to  menu")
 
 
     def search_students(self):
@@ -209,7 +237,8 @@ class Student:
                         print("sex: ",row[3])
                         print("year level: ",row[4])
                         break
-        input("press any key to continue")
+                
+        input("press any key to return to menu")
 
 
     def list_student(self):
@@ -224,12 +253,12 @@ class Student:
                 if len(row)>0:
                     print("student id: ",row[0])
                     print("name: ",row[1])
-                    print("course",row[2])
+                    print("course:",row[2])
                     print("sex: ",row[3])
                     print("year level: ",row[4])
                     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-        input("press any key to continue")
+        input("press any key to return to menu")
 
     
 def select_menu():
@@ -251,13 +280,15 @@ def add_menu():
     while answer != 'c':
         if answer == 'a':
             s.add_student()
+            return
         elif answer == 'b':
             c.add_course()
+            return
         else:
             print('error: command not found')
             add_menu()
             answer = input()
-    select_menu()
+    return
 
 
 def delete_menu():
@@ -269,13 +300,15 @@ def delete_menu():
     while answer != 'c':
         if answer == 'a':
             s.delete_student()
+            return
         elif answer == 'b':
             c.delete_course()  
-    else:
-        print('error: command not found')
-        delete_menu()
-        answer = input()
-select_menu()
+            return
+        else:
+            print('error: command not found')
+            delete_menu()
+            answer = input()
+    return
 
 
 def edit_menu():
@@ -287,13 +320,15 @@ def edit_menu():
     while answer !='c':
         if answer == 'a':
             s.edit_student()
+            return
         elif answer == 'b':
             c.edit_course()
+            return
         else:
             print('error: command not found')
             edit_menu()
             answer = input()
-    select_menu()
+    return
 
 
 def view_menu():
@@ -305,13 +340,15 @@ def view_menu():
     while answer != 'c':
         if answer == 'a':
             s.list_student()
+            return
         elif answer == 'b':
             c.list_course()
+            return
         else:
             print('error: command not found')
             view_menu()
             answer = input()
-    select_menu()
+    return
 
 
 c= Course()
